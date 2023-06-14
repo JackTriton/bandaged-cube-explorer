@@ -11,6 +11,9 @@ Usage:
     
 """
 import copy
+import time
+import re
+import math
 
 default_cube = [  0, 1, 2,
                  3, 4, 5,
@@ -299,7 +302,31 @@ class Search:
             return self.res
         return None
 
-import time
+def finer(text):
+    text = " " + text + " "
+    reg = re.findall(r"(([^2'\s])[2'\s]{1,2}([^2'\s])[2'\s]{1,2}\2[2'\s]{1,2}\3[2'\s]{1,2})",text)
+    t = [reg[k][0][:-1] for k in range(len(reg))]
+    for a in t:
+        setter = a
+        term = text.split(setter)
+        meg = term[0]
+        for b in range(text.count(setter)):
+            meg += "(" + setter + ")" + term[b+1]
+        text = meg
+    reg = re.findall(r"\s(([^2'\s])[2'\s]{1,2}([^2'\s])[2'\s]{1,2}\2[2'\s]{1,2}\s)",text)
+    t = [reg[k][0][:-1] for k in range(len(reg))]
+    for a in t:
+        setter = a
+        term = text.split(setter)
+        meg = term[0]
+        for b in range(text.count(setter)):
+            meg += "(" + setter + ")" + term[b+1]
+        text = meg
+    if text.startswith(" "):
+        text = text[1:]
+    if text.endswith(" "):
+        text = text[:-1]
+    return text
 
 def Bandager(bandage_arg):
     bandaged_cube = copy.deepcopy(default_cube)
@@ -324,21 +351,47 @@ def Bandager(bandage_arg):
 
 cube = Bandager("UBL+UB,UBR+UR,U+UL,UF+UFL,F+FD,FL+FDL,FR+FRD,L+LD,BL+BLD,B+BD+D,R+RB,RD+RDB")
 
-scramble = "F' U L F' L' F2 R U' R'"
-solution_name = "T:UF>>UR>>UB>>"
+scramble = "R U R' F2 L F L' U' F R U2 L' U R' U2 L U' R U R' F2 L F L' U' F"
+solution_name = "TEST"
 scrambled_state, scrambled_cube = scamble2state(scramble, cube)
 search = Search(cube, scrambled_cube)
 start = time.time()
 solution = search.start_search(scrambled_state, scrambled_cube, max_length=25, get=5)
+
 fine_solution = ""
 for k, sol in solution.items():
     P = int(k) + 1
-    solen = 1 + sol.count(" ")
-    disability = sol.count("L") + sol.count("F")
-    usability = 25 - solen - (0.2 * disability)
+    solen = len(re.findall(r"[^2'\s]",sol))
+    
+    a = len(re.findall(r"([^2'\s])[2'\s]{1,2}([^2'\s])[2'\s]{1,2}\1[2'\s]{1,2}\2[2'\s]{1,2}",sol))
+    b = len(re.findall(r"([^2'\s])[2'\s]{1,2}([^2'\s])[2'\s]{1,2}\1[2'\s]{1,2}",sol))
+    extra = a + b
+    
+    get = {}
+    for face_name in faces:
+        get[face_name] = sol.count(face_name + "2") + sol.count(face_name)
+    i = 0
+    h = 0
+    b = []
+    for y, co in get.items():
+        if co == 0:
+            b.append(y)
+        else:
+            h += co
+            i += 1
+    for g in b:
+        del get[g]
+    median = h / i
+    r = 0
+    for y, co in get.items():
+        r += (co - median) ** 2
+    disability = math.ceil((len(get)/2)*math.sqrt(r/i))
+    usability = 25 - solen + (extra * 0.25) - (disability * 0.125)
     if usability < 0:
         continue
-    fine_solution += f"\n{P}: Length: {solen} Usability: {usability}\n{sol}\n"
+    fine_sol = finer(sol)
+    fine_solution += f"\n{P}: Length: {solen} Usability: {usability:.3f}\n{fine_sol}\n"
+    
 print(f"Finished! ({time.time() - start:.2f} sec.)\n")
 if solution:
   print(f"{solution_name}\nScramble: {scramble}\nSolution: \n{fine_solution}\n")
