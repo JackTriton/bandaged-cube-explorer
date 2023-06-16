@@ -358,7 +358,7 @@ search = Search(cube, scrambled_cube)
 start = time.time()
 solution = search.start_search(scrambled_state, scrambled_cube, max_length=25, get=5)
 
-fine_solution = ""
+fine_dict = {}
 for k, sol in solution.items():
     P = int(k) + 1
     solen = len(re.findall(r"[^2'\s]",sol))
@@ -390,8 +390,13 @@ for k, sol in solution.items():
     if usability < 0:
         continue
     fine_sol = finer(sol)
-    fine_solution += f"\n{P}: Length: {solen} Usability: {usability:.3f}\n{fine_sol}\n"
-    
+    f_solution = f"Length: {solen} Usability: {usability:.3f}\n{fine_sol}"
+    fine_dict[f_solution] = usability
+
+fined_list = sorted(fine_dict.items(), lambda x:float(x[1]), reverse=True)
+fine_solution = ""
+for i, d in enumerate(fined_list):
+    fine_solution += f"\n{i+1}: {d[0]}\n"
 print(f"Finished! ({time.time() - start:.2f} sec.)\n")
 if solution:
   print(f"{solution_name}\nScramble: {scramble}\nSolution: \n{fine_solution}\n")
