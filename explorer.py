@@ -360,12 +360,11 @@ solution = search.start_search(scrambled_state, scrambled_cube, max_length=25, g
 
 fine_dict = {}
 for k, sol in solution.items():
-    P = int(k) + 1
     solen = len(re.findall(r"[^2'\s]",sol))
     
     a = len(re.findall(r"([^2'\s])[2'\s]{1,2}([^2'\s])[2'\s]{1,2}\1[2'\s]{1,2}\2[2'\s]{1,2}",sol))
     b = len(re.findall(r"([^2'\s])[2'\s]{1,2}([^2'\s])[2'\s]{1,2}\1[2'\s]{1,2}",sol))
-    extra = a + b
+    extra = b - a
     
     get = {}
     for face_name in faces:
