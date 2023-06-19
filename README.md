@@ -4,7 +4,7 @@ Explore and Solve every bandaged 3x3x3
 ## Usage
 Open `start.py`
 
-`explorer(bandage_seq, scramble, scramble_name, length, get)`
+`explorer(bandage_seq, scramble, scramble_name, length, get, export)`
 
 Input the bandaged cube's bandage to `bandage_seq` (str) using  
 `X+Y to connect part X and part Y`
@@ -16,6 +16,8 @@ Core is named `C` and for other faces, please check out [Here](https://ruwix.com
 Put the scramble into `scramble` (str) and name the solution into `scramble_name ` (str)
 
 Put the maximum length of solution to the `length` (int) and how many solutions to get in `get` (int).
+
+Put the export file name to `export` (str).
 
 Run the script on Python IDLE.
 ## Credits
