@@ -95,11 +95,13 @@ class State:
     Class represent the cube states
     """
 
-    def __init__(self, cp, co, ep, eo):
+    def __init__(self, cp, co, ep, eo, cep, ceo):
         self.cp = cp
         self.co = co
         self.ep = ep
         self.eo = eo
+        self.cep = cep
+        self.ceo = ceo
 
     def apply_move(self, move):
         """
@@ -109,7 +111,9 @@ class State:
         new_co = [(self.co[p] + move.co[i]) % 3 for i, p in enumerate(move.cp)]
         new_ep = [self.ep[p] for p in move.ep]
         new_eo = [(self.eo[p] + move.eo[i]) % 2 for i, p in enumerate(move.ep)]
-        return State(new_cp, new_co, new_ep, new_eo)
+        new_cep = [self.cep[p] for p in move.cep]
+        new_ceo = [(self.ceo[p] + move.ceo[i]) % 4 for i, p in enumerate(move.cep)]
+        return State(new_cp, new_co, new_ep, new_eo, new_cep, new_ceo)
 
 
 # Solved state instance
@@ -118,6 +122,8 @@ solved_state = State(
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 1, 2, 3, 4, 5],
+    [0, 0, 0, 0, 0, 0]
 )
 
 # Classify 18 1-movers
@@ -125,28 +131,80 @@ moves = {
     'U': State([3, 0, 1, 2, 4, 5, 6, 7],
                [0, 0, 0, 0, 0, 0, 0, 0],
                [0, 1, 2, 3, 7, 4, 5, 6, 8, 9, 10, 11],
-               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 1, 2, 3, 4, 5],
+               [1, 0, 0, 0, 0, 0]),
     'D': State([0, 1, 2, 3, 5, 6, 7, 4],
                [0, 0, 0, 0, 0, 0, 0, 0],
                [0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 8],
-               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 1, 2, 3, 4, 5],
+               [0, 3, 0, 0, 0, 0]),
     'L': State([4, 1, 2, 0, 7, 5, 6, 3],
                [2, 0, 0, 1, 1, 0, 0, 2],
                [11, 1, 2, 7, 4, 5, 6, 0, 8, 9, 10, 3],
-               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 1, 2, 3, 4, 5],
+               [0, 0, 3, 0, 0, 0]),
     'R': State([0, 2, 6, 3, 4, 1, 5, 7],
                [0, 1, 2, 0, 0, 2, 1, 0],
                [0, 5, 9, 3, 4, 2, 6, 7, 8, 1, 10, 11],
-               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 1, 2, 3, 4, 5],
+               [0, 0, 0, 1, 0, 0]),
     'F': State([0, 1, 3, 7, 4, 5, 2, 6],
                [0, 0, 1, 2, 0, 0, 2, 1],
                [0, 1, 6, 10, 4, 5, 3, 7, 8, 9, 2, 11],
-               [0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0]),
+               [0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0],
+               [0, 1, 2, 3, 4, 5],
+               [0, 0, 0, 0, 1, 0]),
     'B': State([1, 5, 2, 3, 0, 4, 6, 7],
                [1, 2, 0, 0, 2, 1, 0, 0],
                [4, 8, 2, 3, 1, 5, 6, 7, 0, 9, 10, 11],
-               [1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0]
+               [1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
+               [0, 1, 2, 3, 4, 5],
+               [0, 0, 0, 0, 0, 3]
                )}
+
+wide_moves = {
+    'u': State([3, 0, 1, 2, 4, 5, 6, 7],
+               [0, 0, 0, 0, 0, 0, 0, 0],
+               [3, 0, 1, 2, 7, 4, 5, 6, 8, 9, 10, 11],
+               [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 1, 4, 5, 3, 2],
+               [1, 0, 0, 0, 0, 0]),
+    'd': State([0, 1, 2, 3, 5, 6, 7, 4],
+               [0, 0, 0, 0, 0, 0, 0, 0],
+               [1, 2, 3, 0, 4, 5, 6, 7, 9, 10, 11, 8],
+               [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 1, 5, 4, 2, 3],
+               [0, 3, 0, 0, 0, 0]),
+    'l': State([4, 1, 2, 0, 7, 5, 6, 3],
+               [2, 0, 0, 1, 1, 0, 0, 2],
+               [11, 1, 2, 7, 8, 5, 4, 0, 10, 9, 6, 3],
+               [0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+               [5, 4, 2, 3, 0, 1],
+               [0, 0, 3, 0, 0, 0]),
+    'r': State([0, 2, 6, 3, 4, 1, 5, 7],
+               [0, 1, 2, 0, 0, 2, 1, 0],
+               [0, 5, 9, 3, 4, 2, 6, 7, 8, 1, 10, 11],
+               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+               [4, 5, 2, 3, 1, 0],
+               [0, 0, 0, 1, 0, 0]),
+    'f': State([0, 1, 3, 7, 4, 5, 2, 6],
+               [0, 0, 1, 2, 0, 0, 2, 1],
+               [0, 1, 6, 10, 4, 5, 3, 7, 8, 9, 2, 11],
+               [0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0],
+               [2, 3, 1, 0, 4, 5],
+               [0, 0, 0, 0, 1, 0]),
+    'b': State([1, 5, 2, 3, 0, 4, 6, 7],
+               [1, 2, 0, 0, 2, 1, 0, 0],
+               [4, 8, 2, 3, 1, 5, 6, 7, 0, 9, 10, 11],
+               [1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
+               [3, 2, 0, 1, 4, 5],
+               [0, 0, 0, 0, 0, 3]
+               )}
+
 move_names = []
 faces = list(moves.keys())
 for face_name in faces:
@@ -192,11 +250,16 @@ def scramble2state(scramble, cube):
         cur_cube = turn(move_name, cur_cube)
     return scrambled_state, cur_cube
 
-def is_solved(state):
+def is_solved(state, check_center=False):
+    if check_center:
+        und = (state.ceo == [0] * 6 and state.cep == list(range(6)))
+    else:
+        und = True
     return (state.eo == [0] * 12  # Solved EO
             and state.co == [0] * 8  # Solved CO
             and state.ep == list(range(12))  # Solved EP
             and state.cp == list(range(8))  # Solved CP
+            and und
             )
 
 # Dict that to get opposite side
@@ -241,6 +304,12 @@ def count_solved_edges(state):
     """
     return sum([state.ep[i] == i and state.eo[i] == 0 for i in range(12)])
 
+def count_solved_centers(state):
+    """
+    Count solved centers
+    """
+    return sum([state.cep[i] == i and state.ceo[i] == 0 for i in range(6)])
+
 
 def prune(depth, state):
     """
@@ -258,7 +327,7 @@ def prune(depth, state):
     return False
 
 class Search:
-    def __init__(self,initcube,scrcube):
+    def __init__(self,initcube,scrcube,centers=False,wide=False):
         self.current_solution = []
         self.initcube = copy.deepcopy(normalize(initcube))
         self.scrcube = scrcube
@@ -266,10 +335,12 @@ class Search:
         self.curcube_state[""] = scrcube
         self.res = {}
         self.count = 0
+        self.use_center = centers
+        self.wide = wide
 
     def depth_limited_search(self, state, scrcube, depth, get=1):
         comp = get
-        if depth == 0 and is_solved(state):
+        if depth == 0 and is_solved(state,self.wide or self.use_center):
             self.res[str(self.count)] = " ".join(self.current_solution)
             self.count += 1
             if self.count == get:
