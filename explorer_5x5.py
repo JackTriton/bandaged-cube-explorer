@@ -165,11 +165,11 @@ class State:
     Class represent the cube states
     """
 
-    def __init__(self, cp, co, ep, e1p, eo, cep, ccp):
+    def __init__(self, cp, co, ep, wep, eo, cep, ccp):
         self.cp = cp
         self.co = co
         self.ep = ep
-        self.e1p = e1p
+        self.wep = wep
         self.eo = eo
         self.cep = cep
         self.ccp = ccp
@@ -181,11 +181,11 @@ class State:
         new_cp = [self.cp[p] for p in move.cp]
         new_co = [(self.co[p] + move.co[i]) % 3 for i, p in enumerate(move.cp)]
         new_ep = [self.ep[p] for p in move.ep]
-        new_e1p = [self.e1p[p] for p in move.e1p]
+        new_wep = [self.wep[p] for p in move.wep]
         new_eo = [(self.eo[p] + move.eo[i]) % 2 for i, p in enumerate(move.ep)]
         new_cep = [self.cep[p] for p in move.cep]
         new_ccp = [self.ccp[p] for p in move.ccp]
-        return State(new_cp, new_co, new_ep, new_eo, new_cep, new_ccp)
+        return State(new_cp, new_co, new_ep, new_wep, new_eo, new_cep, new_ccp)
 
 
 # Solved state instance
@@ -204,39 +204,87 @@ moves = {
     'U': State([3, 0, 1, 2, 4, 5, 6, 7],
                [0, 0, 0, 0, 0, 0, 0, 0],
                [0, 1, 2, 3, 7, 4, 5, 6, 8, 9, 10, 11],
+               [6, 7, 0, 1, 2, 3, 4, 5, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-               [0, 1, 2, 3, 4, 5],
-               [1, 0, 0, 0, 0, 0]),
+               [3, 0, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+               [3, 0, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]),
+    '1U':State([0, 1, 2, 3, 4, 5, 6, 7],
+               [0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+               [0, 1, 2, 3, 4, 5, 6, 7, 11, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 1, 2, 3, 8, 5, 6, 7,12, 9, 10, 11, 16, 13, 14, 15,  4, 17, 18, 19, 20, 21, 22, 23],
+               [0, 1, 2, 3, 8, 9, 6, 7,12,13, 10, 11, 16, 17, 14, 15,  4,  5, 18, 19, 20, 21, 22, 23]),
+    '1D':State([0, 1, 2, 3, 4, 5, 6, 7],
+               [0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+               [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 12, 16, 17, 18, 19, 20, 21, 22, 23],
+               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 1, 2, 3, 4, 5,18, 7, 8, 9,  6, 11, 12, 13, 10, 15, 16, 17, 14, 19, 20, 21, 22, 23],
+               [0, 1, 2, 3, 4, 5,18,19, 8, 9,  6,  7, 12, 13, 10, 11, 16, 17, 14, 15, 20, 21, 22, 23]),
     'D': State([0, 1, 2, 3, 5, 6, 7, 4],
                [0, 0, 0, 0, 0, 0, 0, 0],
                [0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 8],
+               [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 18, 19, 20, 21, 22, 23, 16, 17],
                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-               [0, 1, 2, 3, 4, 5],
-               [0, 3, 0, 0, 0, 0]),
+               [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 23, 20, 21, 22],
+               [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 23, 20, 21, 22]),
     'L': State([4, 1, 2, 0, 7, 5, 6, 3],
                [2, 0, 0, 1, 1, 0, 0, 2],
                [11, 1, 2, 7, 4, 5, 6, 0, 8, 9, 10, 3],
+               [0, 1, 2, 3, 4, 5, 8,12,22, 9, 10,  7, 23, 13, 14,  6, 16, 17, 18, 19, 20, 21, 15, 11],
                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-               [0, 1, 2, 3, 4, 5],
-               [0, 0, 3, 0, 0, 0]),
+               [0, 1, 2, 3, 7, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+               [0, 1, 2, 3, 7, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]),
+    '1L':State([0, 1, 2, 3, 4, 5, 6, 7],
+               [0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+               [21,1, 2, 3, 4, 0, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,  5, 17, 18, 19, 20, 16, 22, 23],
+               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 1, 2,17, 4, 5, 6, 7, 8, 9, 10,  3, 12, 13, 14, 15, 16, 23, 18, 19, 20, 21, 22, 11],
+               [18, 1, 2,17, 4, 5, 6, 7, 0, 9, 10, 3, 12, 13, 14, 15, 16, 23, 20, 19,  8, 21, 22, 11]),
+    '1R':State([0, 1, 2, 3, 4, 5, 6, 7],
+               [0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+               [0, 4, 2, 3,17, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 20, 18, 19,  1, 21, 22, 23],
+               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 9, 2, 3, 4, 5, 6, 7, 8,21, 10, 11, 12, 13, 14, 15, 16, 17, 18,  1, 20, 19, 22, 23],
+               [0, 9,10, 3, 4, 5, 6, 7, 8,21, 22, 11, 12, 13, 14, 15,  2, 17, 18,  1, 20, 19, 16, 23]),
     'R': State([0, 2, 6, 3, 4, 1, 5, 7],
                [0, 1, 2, 0, 0, 2, 1, 0],
                [0, 5, 9, 3, 4, 2, 6, 7, 8, 1, 10, 11],
+               [0, 1,10,14, 4, 5, 6, 7, 8, 3, 18, 11, 12,  2, 19, 15, 16, 17, 13,  9, 20, 21, 22, 23],
                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-               [0, 1, 2, 3, 4, 5],
-               [0, 0, 0, 1, 0, 0]),
+               [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 15, 12, 13, 14, 16, 17, 18, 19, 20, 21, 22, 23],
+               [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 15, 12, 13, 14, 16, 17, 18, 19, 20, 21, 22, 23]),
     'F': State([0, 1, 3, 7, 4, 5, 2, 6],
                [0, 0, 1, 2, 0, 0, 2, 1],
                [0, 1, 6, 10, 4, 5, 3, 7, 8, 9, 2, 11],
+               [0, 1, 2, 3,11,15, 6, 7, 8, 9,  5, 16, 12, 13,  4, 17, 14, 10, 18, 19, 20, 21, 22, 23],
                [0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0],
-               [0, 1, 2, 3, 4, 5],
-               [0, 0, 0, 0, 1, 0]),
+               [0, 1, 2, 3, 4, 5, 6, 7, 11, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+               [0, 1, 2, 3, 4, 5, 6, 7, 11, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]),
+    '1F':State([0, 1, 2, 3, 4, 5, 6, 7],
+               [0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+               [0, 1, 2, 6, 4, 5,23, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,  3, 19, 20, 21, 22, 18],
+               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 1, 5, 3, 4,20, 6, 7, 8, 9, 10, 11, 12, 13, 14,  2, 16, 17, 18, 19, 15, 21, 22, 23],
+               [0, 1, 5, 6, 4,20,21, 7, 8, 9, 10, 11,  3, 13, 14,  2, 16, 17, 18, 19, 15, 12, 22, 23]),
+    '1B':State([0, 1, 2, 3, 4, 5, 6, 7],
+               [0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+               [0, 1,19, 3, 4, 5, 6, 2, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 22, 20, 21,  7, 23],
+               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+               [13, 1,2, 3, 4, 5, 6, 0, 8, 9, 10, 11, 12, 22, 14, 15, 16, 17, 18, 19, 20, 21,  7, 23],
+               [13,14,2, 3, 1, 5, 6, 0, 8, 9, 10, 11, 12, 22, 23, 15, 16, 17, 18, 19, 20, 21,  7,  4]),
     'B': State([1, 5, 2, 3, 0, 4, 6, 7],
                [1, 2, 0, 0, 2, 1, 0, 0],
                [4, 8, 2, 3, 1, 5, 6, 7, 0, 9, 10, 11],
+               [9,13, 2, 3, 4, 5, 6, 7, 1,20, 10, 11,  0, 21, 14, 15, 16, 17, 18, 19, 12,  8, 22, 23],
                [1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
-               [0, 1, 2, 3, 4, 5],
-               [0, 0, 0, 0, 0, 3]
+               [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 19, 16, 17, 18, 20, 21, 22, 23],
+               [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 19, 16, 17, 18, 20, 21, 22, 23]
                )}
 
 wide_moves = {
@@ -281,13 +329,16 @@ wide_moves = {
 move_names = []
 faces = list(moves.keys())
 for face_name in faces:
-    move_names += [face_name, face_name + '2', face_name + '\'']
+    move_names += [face_name, face_name + '2', face_name + '\'', face_name + "w", face_name + "w2", face_name + "w\'"]
     moves[face_name + '2'] = moves[face_name].apply_move(moves[face_name])
     moves[face_name + '\''] = moves[face_name].apply_move(moves[face_name]).apply_move(moves[face_name])
+    moves[face_name + 'w'] = moves[face_name].apply_move(moves["1"+face_name])
+    moves[face_name + 'w2'] = moves[face_name].apply_move(moves["1"+face_name]).apply_move(moves[face_name]).apply_move(moves["1"+face_name])
+    moves[face_name + 'w\''] = moves[face_name].apply_move(moves["1"+face_name]).apply_move(moves[face_name]).apply_move(moves["1"+face_name]).apply_move(moves[face_name])
 
 def _rotate(fc):
-    """ Rotate a length-9 list representing a layer 90 degrees. """
-    return [fc[6], fc[3], fc[0], fc[7], fc[4], fc[1], fc[8], fc[5], fc[2]]
+    """ Rotate a length-25 list representing a layer 90 degrees. """
+    return [fc[20],fc[15],fc[10],fc[5],fc[0],fc[21],fc[16],fc[11],fc[6],fc[1],fc[22],fc[17],fc[12],fc[7],fc[2],fc[23],fc[18],fc[13],fc[8],fc[3],fc[24],fc[19],fc[14],fc[9],fc[4]]
 
 def turn(move, cube):
     """ Do a single face turn and return the new cube. """
@@ -297,17 +348,29 @@ def turn(move, cube):
         num = 2
     else:
         num = 1
-    face = FACES[move[0]]
-    facecontent = [cube[i] for i in range(27) if i in face]
-    if (num == 1 and face[0] not in [1, 2]) or (num == 3 and face[0] in [1, 2]):
+    if "w" in move:
+        double = True
+    else:
+        double = False
+    if move[0] == "1":
+        face = FACES[move[:2]]
+        axis = move[1]
+    else:
+        face = FACES[move[0]]
+        axis = move[0]
+    facecontent = [cube[i] for i in range(125) if i in face]
+    if (num == 1 and axis not in ["R","D","B"]) or (num == 3 axis in ["R","D","B"]):
         turned = _rotate(facecontent)
     elif num == 2:
         turned = _rotate(_rotate(facecontent))
-    elif (num == 3 and face[0] not in [1, 2]) or (num == 1 and face[0] in [1, 2]):
+    elif (num == 3 and axis not in ["R","D","B"]) or (num == 1 and axis in ["R","D","B"]):
         turned = _rotate(_rotate(_rotate(facecontent)))
     newcube = copy.deepcopy(cube) # consider list(cube)
     for i, fi in enumerate(face):
         newcube[fi] = turned[i]
+    if double:
+        dmove = "1" + move.replace("w","")
+        turn(dmove,normalize(newcube))
     return normalize(newcube)
 
 def scramble2state(scramble, cube):
@@ -323,45 +386,75 @@ def scramble2state(scramble, cube):
         cur_cube = turn(move_name, cur_cube)
     return scrambled_state, cur_cube
 
-def is_solved(state, check_center=False):
-    if check_center:
-        und = (state.ceo == [0] * 6 and state.cep == list(range(6)))
-    else:
-        und = True
+def is_solved(state):
+    cep_x = [x // 4 for x in state.cep]
+    ccp_x = [x // 4 for x in state.ccp]
     return (state.eo == [0] * 12  # Solved EO
             and state.co == [0] * 8  # Solved CO
             and state.ep == list(range(12))  # Solved EP
+            and state.wep == list(range(24)) # Solved WEP
             and state.cp == list(range(8))  # Solved CP
-            and und
+            and cep_x == sorted(list(range(6))*4) # Solved CEP
+            and ccp_x == sorted(list(range(6))*4) # Solved CCP
             )
 
 # Dict that to get opposite side
 inv_face = {
     "U": "D",
     "D": "U",
+    "1U": "D1",
+    "1D": "U1",
+    "Uw": "Dw",
+    "Dw": "Uw",
     "L": "R",
     "R": "L",
+    "1L": "1R",
+    "1R": "1L",
+    "Lw": "Rw",
+    "Rw": "Lw",
     "F": "B",
-    "B": "F"
+    "B": "F",
+    "1F": "1B",
+    "1B": "1F",
+    "Fw": "Bw",
+    "Bw": "Fw"
 }
 
+def blocked(cube, move):
+    if move[0] == "1":
+        faceblocks = set([cube[i] for i in FACES[move[:2]]])
+        restblocks = set([cube[i] for i in set(range(125)) - set(FACES[move[:2]])])
+        return faceblocks & restblocks
+    elif "w" in move:
+        pmove = move.replace("w","")[0]
+        amove = "1" + pmove
+        pfaceblocks = set([cube[i] for i in FACES[pmove]])
+        prestblocks = set([cube[i] for i in set(range(125)) - set(FACES[pmove])])
+        afaceblocks = set([cube[i] for i in FACES[amove]])
+        arestblocks = set([cube[i] for i in set(range(125)) - set(FACES[amove])])
+        remp = (pfaceblocks & prestblocks) or (afaceblocks & arestblocks)
+        return remp
+    else:
+        faceblocks = set([cube[i] for i in FACES[move[0]]])
+        restblocks = set([cube[i] for i in set(range(125)) - set(FACES[move[0]])])
+        return faceblocks & restblocks
+    
 def is_move_available(cube, prev_move, move):
     """
     - Cannot turn same face e.g.) R' R2 is not avaiable
     - If opposite face is going to move, the order is always same e.g.) can do U D but cannot do D U
     - If the bandaging is blocking the face to turn, it cannot turn
     """
-    faceblocks = set([cube[i] for i in FACES[move[0]]])
-    restblocks = set([cube[i] for i in set(range(27)) - set(FACES[move[0]])])
-    if faceblocks & restblocks: # Check if the number of bandaging is same or not
+    if blocked(cube, move): # Check if the number of bandaging is same or not
         return False
     if prev_move is None:
         return True  # Avaiable if this is first move
-    prev_face = prev_move[0]  # Previous move
-    if prev_face == move[0]:
+    prev_face = prev_move.replace("2","").replace("\'","") # Previous move
+    mover = move.replace("2","").replace("\'","")
+    if prev_face == mover:
         return False # Turning same face is not avaiable
-    if inv_face[prev_face] == move[0]:
-        return prev_face < move[0] # If opposite face, the order would be same as in dict
+    if inv_face[prev_face] == mover:
+        return prev_face < mover # If opposite face, the order would be same as in dict
     return True
 
 def count_solved_corners(state):
@@ -377,18 +470,23 @@ def count_solved_edges(state):
     """
     return sum([state.ep[i] == i and state.eo[i] == 0 for i in range(12)])
 
-def count_solved_centers(state):
+def count_solved_xcenter(state):
     """
-    Count solved centers
+    Count solved xcenters
     """
-    return sum([state.cep[i] == i and state.ceo[i] == 0 for i in range(6)])
+    return sum([state.ccp[i] // 4 == i // 4 for i in range(24)])
 
+def count_solved_pcenter(state):
+    """
+    Count solved pcenters
+    """
+    return sum([state.cep[i] // 4 == i // 4 for i in range(24)])
 
 def prune(depth, state):
     """
     Give back True if the program doesn't have to be run
     """
-    if depth == 1 and (count_solved_corners(state) < 4 or count_solved_edges(state) < 8):
+    if depth == 1 and (count_solved_corners(state) < 4 or count_solved_edges(state) < 8 or count_solved_xcenter(state) < 16 or count_solved_pcenter(state) < 20):
         # If there is only 1 move and solved corner is less than 4 or solved edge is less than 8, it cannot be solved
         return True
     if depth == 2 and count_solved_edges(state) < 4:
@@ -400,7 +498,7 @@ def prune(depth, state):
     return False
 
 class Search:
-    def __init__(self,initcube,scrcube,centers=False,wide=False):
+    def __init__(self,initcube,scrcube):
         self.current_solution = []
         self.initcube = copy.deepcopy(normalize(initcube))
         self.scrcube = scrcube
@@ -408,8 +506,6 @@ class Search:
         self.curcube_state[""] = scrcube
         self.res = {}
         self.count = 0
-        self.use_center = centers
-        self.wide = wide
 
     def depth_limited_search(self, state, scrcube, depth, get=1):
         comp = get
@@ -448,7 +544,7 @@ class Search:
 
 def finer(text):
     text = " " + text + " "
-    reg = re.findall(r"(([^2'\s])[2'\s]{1,2}([^2'\s])[2'\s]{1,2}\2[2'\s]{1,2}\3[2'\s]{1,2})",text)
+    reg = re.findall(r"(([^2'\s]{1,2})[2'\s]{1,2}([^2'\s]{1,2})[2'\s]{1,2}\2[2'\s]{1,2}\3[2'\s]{1,2})",text)
     t = [reg[k][0][:-1] for k in range(len(reg))]
     for a in t:
         setter = a
@@ -457,7 +553,7 @@ def finer(text):
         for b in range(text.count(setter)):
             meg += "(" + setter + ")" + term[b+1]
         text = meg
-    reg = re.findall(r"\s(([^2'\s])[2'\s]{1,2}([^2'\s])[2'\s]{1,2}\2[2'\s]{1,2}\s)",text)
+    reg = re.findall(r"\s(([^2'\s]{1,2})[2'\s]{1,2}([^2'\s]{1,2})[2'\s]{1,2}\2[2'\s]{1,2}\s)",text)
     t = [reg[k][0][:-1] for k in range(len(reg))]
     for a in t:
         setter = a
